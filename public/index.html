@@ -1,0 +1,869 @@
+<!-- StreamBDIX - By Corpse -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>StreamBDIX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px
+        }
+
+        .box {
+            width: 100%;
+            max-width: 520px;
+            padding: 40px;
+            background: #111;
+            border-radius: 16px;
+            border: 1px solid #222
+        }
+
+        @media (min-width: 900px) {
+            .box {
+                max-width: 900px
+            }
+        }
+
+        @media (min-width: 1200px) {
+            .box {
+                max-width: 1100px
+            }
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px
+        }
+
+        .sub {
+            text-align: center;
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 40px
+        }
+
+        .src {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px;
+            background: #1a1a1a;
+            border-radius: 12px;
+            transition: background .15s
+        }
+
+        .src:hover {
+            background: #1f1f1f
+        }
+
+        .left {
+            display: flex;
+            align-items: center;
+            gap: 14px
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #333;
+            flex-shrink: 0
+        }
+
+        .dot.on {
+            background: #22c55e;
+            box-shadow: 0 0 8px #22c55e55
+        }
+
+        .dot.off {
+            background: #ef4444;
+            box-shadow: 0 0 8px #ef444455
+        }
+
+        .dot.chk {
+            background: #666;
+            animation: pulse .8s infinite
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1
+            }
+
+            50% {
+                opacity: .3
+            }
+        }
+
+        .info .name {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px
+        }
+
+        .info .stat {
+            font-size: 13px;
+            color: #555;
+            font-family: 'SF Mono', Monaco, monospace
+        }
+
+        .info .stat.on {
+            color: #888
+        }
+
+        .ping {
+            font-weight: 600
+        }
+
+        .ping.fast {
+            color: #22c55e
+        }
+
+        .ping.med {
+            color: #eab308
+        }
+
+        .ping.slow {
+            color: #ef4444
+        }
+
+        .src-btn {
+            background: #333;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all .15s;
+            flex-shrink: 0;
+            display: none
+        }
+
+        .src-btn.show {
+            display: block
+        }
+
+        .src-btn:hover {
+            background: #444;
+            color: #fff
+        }
+
+        .src-btn.on {
+            background: #22c55e;
+            color: #fff
+        }
+
+        .src-btn.on:hover {
+            background: #1ea34d
+        }
+
+        .src.unreachable {
+            opacity: .5;
+            order: 1
+        }
+
+        .src.reachable {
+            order: 0
+        }
+
+        #sources {
+            display: flex;
+            flex-direction: column;
+            gap: 12px
+        }
+
+        @media (min-width: 900px) {
+            #sources {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px
+            }
+        }
+
+        @media (min-width: 1200px) {
+            #sources {
+                grid-template-columns: repeat(3, 1fr)
+            }
+        }
+
+        .note {
+            margin-top: 16px;
+            margin-bottom: 24px;
+            font-size: 12px;
+            color: #444;
+            text-align: center
+        }
+
+        .btns {
+            margin-top: 0
+        }
+
+        .url {
+            background: #1a1a1a;
+            padding: 14px 16px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-family: 'SF Mono', Monaco, monospace;
+            gap: 10px;
+            overflow: hidden;
+            margin-bottom: 12px
+        }
+
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            padding: 16px;
+            background: #1a1a1a;
+            color: #fff;
+            font-size: 15px;
+            font-weight: 500;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all .15s
+        }
+
+        .btn:hover {
+            background: #252525
+        }
+
+        .btn.off {
+            opacity: .3;
+            pointer-events: none
+        }
+
+        .btn.active {
+            background: #22c55e;
+            color: #fff
+        }
+
+        .btn.active:hover {
+            background: #1ea34d
+        }
+
+        .btn.cf.active {
+            background: #f6821f;
+            color: #fff;
+        }
+
+        .btn.cf.active:hover {
+            background: #d96d11;
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px
+        }
+
+        .btn-row {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 12px
+        }
+
+        @media (min-width: 600px) {
+            .btn-row {
+                flex-direction: row
+            }
+
+            .btn-row .btn {
+                flex: 1
+            }
+        }
+
+        .url span {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+            min-width: 0
+        }
+
+        .url button {
+            background: #333;
+            border: none;
+            color: #888;
+            cursor: pointer;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            transition: all .15s;
+            flex-shrink: 0
+        }
+
+        .url button:hover {
+            background: #444;
+            color: #fff
+        }
+
+        .warn {
+            margin-top: 14px;
+            padding: 14px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #ef4444;
+            display: none;
+            text-align: center
+        }
+
+        .warn.show {
+            display: block
+        }
+
+        .credit {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #555;
+            text-align: center
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 32px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1a1a1a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            opacity: 0;
+            transition: .2s;
+            border: 1px solid #333;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            z-index: 200;
+        }
+
+        .toast a {
+            color: #f6821f;
+            text-decoration: underline;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 100;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-box {
+            background: #111;
+            border: 1px solid #222;
+            padding: 24px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 400px;
+            transform: scale(0.95);
+            transition: transform 0.2s;
+        }
+
+        .modal-overlay.show .modal-box {
+            transform: scale(1);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .modal-input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid #333;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .modal-input:focus {
+            border-color: #f6821f;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background 0.15s;
+        }
+
+        .modal-btn.cancel {
+            background: #333;
+            color: #ccc;
+        }
+
+        .modal-btn.cancel:hover {
+            background: #444;
+            color: #fff;
+        }
+
+        .modal-btn.save {
+            background: #333;
+            color: #fff;
+        }
+
+        .modal-btn.save:hover {
+            background: #444;
+        }
+
+        .modal-btn.danger {
+            background: #333;
+            color: #fff;
+        }
+
+        .modal-btn.danger:hover {
+            background: #444;
+        }
+
+        .modal-link {
+            display: block;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+            margin-top: 20px;
+            text-decoration: none;
+            transition: color 0.15s;
+        }
+
+        .modal-link:hover {
+            color: #f6821f;
+            text-decoration: underline;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <h1>StreamBDIX</h1>
+        <p class="sub">BDIX streaming for Stremio</p>
+        <div id="sources"></div>
+        <p class="note">Changes are saved automatically</p>
+        <div class="btns">
+            <div class="url"><span id="manifestUrl"></span><button onclick="copy()">Copy URL</button></div>
+            <a id="installBtn" class="btn" href="#">Install to Stremio</a>
+            <div class="warn" id="warn">Enable at least one source</div>
+            <div class="btn-row">
+                <button id="devBtn" class="btn" onclick="toggleDev()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <polyline points="16 18 22 12 16 6"></polyline>
+                        <polyline points="8 6 2 12 8 18"></polyline>
+                    </svg>
+                    Developer Mode
+                </button>
+                <button id="cfBtn" class="btn cf" onclick="toggleCloudflare()">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M19.32 7.846c-.527-2.73-2.935-4.78-5.83-4.78-2.52 0-4.68 1.543-5.63 3.726C7.4 6.7 6.94 6.646 6.46 6.646c-3.01 0-5.46 2.44-5.46 5.45 0 3.01 2.45 5.46 5.46 5.46h12.87c2.58 0 4.67-2.09 4.67-4.67 0-2.45-1.89-4.46-4.28-4.63h-.4z" />
+                    </svg>
+                    Cloudflare Tunnel
+                </button>
+                <a href="https://discord.gg/2WapSCJa7H" target="_blank" class="btn">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                    </svg>
+                    Join Discord
+                </a>
+            </div>
+            <p class="credit">Made by <strong>Corpse</strong></p>
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <div class="modal-overlay" id="cfModal" onclick="if(event.target===this)closeModal()">
+        <div class="modal-box">
+            <div class="modal-title">Enable Cloudflare Tunnel</div>
+            <input type="text" class="modal-input" id="cfToken" placeholder="Paste your Cloudflare Tunnel Token here"
+                spellcheck="false">
+            <div class="modal-btns">
+                <!-- Buttons injected by JS -->
+            </div>
+            <a href="https://one.dash.cloudflare.com" target="_blank" class="modal-link">Get Tunnel Token</a>
+        </div>
+    </div>
+    <script>
+        const SOURCES = {
+            dflix: { name: 'Dflix', desc: 'Movies & Series' },
+            dhakaflix: { name: 'DhakaFlix', desc: 'Movies & Series' },
+            roarzone: { name: 'RoarZone', desc: 'Movies & Series (Emby)' },
+            ftpbd: { name: 'FTPBD', desc: 'Movies & Series (Emby)' },
+            circleftp: { name: 'CircleFTP', desc: 'Movies & Series' },
+            iccftp: { name: 'ICC FTP', desc: 'Movies & Series' }
+        };
+        let enabled = [];
+        let forcedSources = [];
+        let devMode = false;
+        let tunnelEnabled = false;
+        let hasToken = false;
+        let tunnelActive = false;
+        let cloudflaredInstalled = true;
+        let lastCheckData = {};
+
+        function isLocalAccess() {
+            const h = location.hostname;
+            return h === 'localhost' || h === '127.0.0.1' || h === '::1';
+        }
+
+        async function init() {
+            document.getElementById('manifestUrl').textContent = location.origin + '/manifest.json';
+            document.getElementById('installBtn').href = 'stremio://' + location.host + '/manifest.json';
+            await loadConfig();
+            render();
+            check();
+        }
+
+        async function loadConfig() {
+            try {
+                const r = await fetch('/api/config');
+                const d = await r.json();
+                enabled = d.sources || Object.keys(SOURCES);
+                forcedSources = d.forcedSources || [];
+                tunnelEnabled = d.tunnelEnabled || false;
+                hasToken = d.hasToken || false;
+                tunnelActive = d.tunnelActive || false;
+                cloudflaredInstalled = d.cloudflaredInstalled !== false;
+            } catch {
+                enabled = Object.keys(SOURCES);
+                forcedSources = [];
+            }
+        }
+
+        async function saveConfig() {
+            try { await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ sources: enabled, forcedSources, tunnelEnabled }) }) } catch { }
+            await loadConfig();
+            updateUI();
+        }
+
+        function render() {
+            const c = document.getElementById('sources');
+            c.innerHTML = Object.entries(SOURCES).map(([k, v]) => `
+<div class="src" id="src-${k}" onclick="forceToggle('${k}')">
+<div class="left">
+<div class="dot chk" id="dot-${k}"></div>
+<div class="info"><div class="name">${v.name}</div><div class="stat" id="stat-${k}">checking...</div></div>
+</div>
+<button class="src-btn" id="btn-${k}" onclick="event.stopPropagation(); toggle('${k}')">Disabled</button>
+</div>`).join('');
+            updateUI();
+        }
+
+        async function forceToggle(k) {
+            if (!devMode) return;
+            const isForced = forcedSources.includes(k);
+            if (isForced) {
+                forcedSources = forcedSources.filter(x => x !== k);
+                enabled = enabled.filter(x => x !== k);
+                toast(SOURCES[k].name + ' removed from forced');
+            } else {
+                forcedSources.push(k);
+                if (!enabled.includes(k)) enabled.push(k);
+                toast(SOURCES[k].name + ' force-enabled');
+            }
+            await saveConfig();
+            applyCheckData(lastCheckData);
+        }
+
+        function toggle(k) {
+            if (forcedSources.includes(k) && !devMode) {
+                toast('Enable Developer Mode to modify forced sources');
+                return;
+            }
+            const btn = document.getElementById('btn-' + k);
+            const isCurrentlyEnabled = enabled.includes(k);
+            if (isCurrentlyEnabled) {
+                enabled = enabled.filter(x => x !== k);
+                if (forcedSources.includes(k)) forcedSources = forcedSources.filter(x => x !== k);
+                btn.classList.remove('on');
+                btn.textContent = 'Disabled';
+                toast(SOURCES[k].name + ' disabled');
+            } else {
+                enabled.push(k);
+                btn.classList.add('on');
+                btn.textContent = 'Enabled';
+                toast(SOURCES[k].name + ' enabled');
+            }
+            saveConfig();
+        }
+
+        function toggleDev() {
+            devMode = !devMode;
+            const btn = document.getElementById('devBtn');
+            btn.classList.toggle('active', devMode);
+            toast(devMode ? 'Developer Mode Enabled' : 'Developer Mode Disabled');
+            updateUI();
+            applyCheckData(lastCheckData);
+        }
+
+        function toggleCloudflare() {
+            if (!isLocalAccess()) {
+                toast('Cloudflare management denied via tunnel');
+                return;
+            }
+
+            if (!cloudflaredInstalled) {
+                toast('cloudflared not installed. <a href="https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/" target="_blank">Get it here</a>', true);
+                return;
+            }
+
+            if (!hasToken) {
+                openModal('input');
+                return;
+            }
+
+            if (devMode) {
+                if (tunnelActive) {
+                    toast('Stop tunnel first to manage token');
+                    return;
+                }
+                openModal('manage');
+                return;
+            }
+
+            if (tunnelEnabled) {
+                tunnelEnabled = false;
+                toast('Cloudflare Tunnel Disabled');
+            } else {
+                tunnelEnabled = true;
+                toast('Cloudflare Tunnel Enabled');
+            }
+            saveConfig();
+        }
+
+        function openModal(mode) {
+            const m = document.getElementById('cfModal');
+            const i = document.getElementById('cfToken');
+            const title = m.querySelector('.modal-title');
+            const btns = m.querySelector('.modal-btns');
+
+            m.classList.add('show');
+            i.value = '';
+            i.focus();
+
+            if (mode === 'manage') {
+                title.textContent = 'Manage Cloudflare Token';
+                btns.innerHTML = `
+                    <button class="modal-btn danger" onclick="deleteToken()">Delete Existing Token</button>
+                    <button class="modal-btn save" onclick="saveContextAndEnable()">Update Token</button>
+                `;
+            } else {
+                title.textContent = 'Enable Cloudflare Tunnel';
+                btns.innerHTML = `
+                    <button class="modal-btn save" onclick="saveContextAndEnable()">Enable Tunnel</button>
+                    <button class="modal-btn cancel" onclick="closeModal()">Cancel</button>
+                `;
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('cfModal').classList.remove('show');
+        }
+
+        async function deleteToken() {
+            if (!isLocalAccess() || tunnelActive) return;
+            if (confirm('Are you sure you want to delete the Cloudflare Token? This will stop the tunnel.')) {
+                await fetch('/api/token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ delete: true }) });
+                await loadConfig();
+                closeModal();
+                updateUI();
+                toast('Token deleted and Tunnel stopped');
+            }
+        }
+
+        async function saveContextAndEnable() {
+            if (!isLocalAccess() || tunnelActive) return;
+            const token = document.getElementById('cfToken').value.trim();
+            if (!token) {
+                toast('Token is required');
+                return;
+            }
+
+            const btns = document.querySelector('.modal-btns');
+            const originalBtnsHtml = btns.innerHTML;
+
+            btns.innerHTML = '<button class="modal-btn cancel" disabled>Validating...</button>';
+
+            try {
+                const res = await fetch('/api/token/validate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token })
+                });
+                const data = await res.json();
+
+                if (data.valid) {
+                    await fetch('/api/token', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ token }) });
+                    tunnelEnabled = true;
+                    await fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tunnelEnabled: true }) });
+                    await loadConfig();
+                    closeModal();
+                    updateUI();
+                    toast('Cloudflare Tunnel Enabled');
+                } else {
+                    btns.innerHTML = originalBtnsHtml;
+                    toast(data.error || 'Invalid token');
+                }
+            } catch {
+                btns.innerHTML = originalBtnsHtml;
+                toast('Validation failed');
+            }
+        }
+
+        function updateUI() {
+            const btn = document.getElementById('installBtn');
+            const warn = document.getElementById('warn');
+            const cfBtn = document.getElementById('cfBtn');
+            if (enabled.length === 0) { btn.classList.add('off'); warn.classList.add('show') }
+            else { btn.classList.remove('off'); warn.classList.remove('show') }
+
+            if (cfBtn) cfBtn.classList.toggle('active', tunnelEnabled);
+        }
+
+        function pingClass(ms) {
+            if (ms < 100) return 'fast';
+            if (ms < 500) return 'med';
+            return 'slow';
+        }
+
+        function applyCheckData(d) {
+            let changed = false;
+            for (const [k, v] of Object.entries(d)) {
+                if (!SOURCES[k]) continue;
+                const dot = document.getElementById('dot-' + k);
+                const stat = document.getElementById('stat-' + k);
+                const btn = document.getElementById('btn-' + k);
+                const src = document.getElementById('src-' + k);
+
+                const isReachable = v.reachable && v.ping <= 999;
+                const isForced = forcedSources.includes(k);
+
+                if (isReachable || devMode || isForced) {
+                    dot.className = isReachable ? 'dot on' : 'dot off';
+                    stat.className = isReachable ? 'stat on' : 'stat';
+                    if (isReachable) {
+                        stat.innerHTML = '<span class="ping ' + pingClass(v.ping) + '">' + v.ping + 'ms</span>';
+                    } else if (isForced) {
+                        stat.textContent = 'forced';
+                    } else {
+                        stat.textContent = 'unreachable (dev)';
+                    }
+
+                    btn.classList.add('show');
+                    const isEnabled = enabled.includes(k);
+                    btn.classList.toggle('on', isEnabled || isForced);
+                    btn.textContent = isForced ? 'Forced' : (isEnabled ? 'Enabled' : 'Disabled');
+                    src.classList.add('reachable');
+                    src.classList.remove('unreachable');
+                } else {
+                    dot.className = 'dot off';
+                    stat.className = 'stat';
+                    stat.textContent = 'unreachable';
+                    src.classList.add('unreachable');
+                    src.classList.remove('reachable');
+                    btn.classList.remove('show');
+
+                    if (enabled.includes(k)) {
+                        enabled = enabled.filter(x => x !== k);
+                        changed = true;
+                    }
+                }
+            }
+            if (changed) saveConfig();
+        }
+
+        async function check() {
+            for (const k of Object.keys(SOURCES)) {
+                document.getElementById('dot-' + k).className = 'dot chk';
+                document.getElementById('stat-' + k).className = 'stat';
+                document.getElementById('stat-' + k).textContent = 'checking...';
+                document.getElementById('btn-' + k).classList.remove('show');
+                document.getElementById('src-' + k).classList.remove('reachable', 'unreachable');
+            }
+            try {
+                const r = await fetch('/api/sources/check');
+                const d = await r.json();
+                lastCheckData = d;
+                applyCheckData(d);
+            } catch { }
+        }
+
+        function copy() { navigator.clipboard.writeText(location.origin + '/manifest.json'); toast('Copied to clipboard!') }
+        function toast(m, html) { const t = document.getElementById('toast'); if (html) t.innerHTML = m; else t.textContent = m; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), html ? 3000 : 1000) }
+
+        init();
+    </script>
+</body>
+
+</html>

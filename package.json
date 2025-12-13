@@ -1,0 +1,23 @@
+{
+  "name": "streambdix",
+  "version": "1.4.0",
+  "description": "Stream from BDIX sites on Stremio",
+  "main": "index.js",
+  "bin": {
+    "streambdix": "./index.js"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "stremio",
+    "bdix",
+    "streaming"
+  ],
+  "author": "corpse",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "stremio-addon-sdk": "^1.6.10"
+  }
+}
