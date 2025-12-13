@@ -1,0 +1,16 @@
+{
+  "id": "com.streambdix",
+  "name": "StreamBDIX",
+  "version": "1.0.1",
+  "description": "Stream from BDIX sites on Stremio",
+  "logo": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/HD_transparent_picture.png/330px-HD_transparent_picture.png",
+  "background": "https://i.ibb.co.com/9X5BHsV/bg.jpg",
+  "resources": ["stream"],
+  "types": ["movie", "series"],
+  "catalogs": [],
+  "idPrefixes": ["tt"],
+  "behaviorHints": {
+    "adult": false,
+    "p2p": false
+  }
+}
